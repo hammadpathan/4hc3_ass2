@@ -1,0 +1,33 @@
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    /*box-sizing: border-box;*/
+}
+
+@font-face {
+    font-family: 'inria sans';
+    src: url('Inria_Sans/InriaSans-Regular.ttf') format('truetype');
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #ffffff;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 20px;
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    padding: 20px;
+    text-align: left;
+}

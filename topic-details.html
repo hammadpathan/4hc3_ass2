@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <div id="topic-info">
+            <h2 id="topic-name">Topic Name</h2>
+            <p>Choose an option below:</p>
+            
+            <!-- Dropdown Menu for Options -->
+            <select id="options-dropdown">
+                <option value="" disabled selected>Select an option</option>
+            </select>
+
+            <!-- Voting Button -->
+            <button id="vote-btn">Vote</button>
+        </div>
+        <div id="votes-display"></div>
+        <!-- Comment Section -->
+        <div id="comment-section">
+            <h3>Feedback</h3>
+            <ul id="comments-list">
+                <!-- Comments will be dynamically populated here -->
+            </ul>
+
+            <form id="comment-form">
+                <textarea id="comment-input" placeholder="Add a comment..." required></textarea>
+                <button type="submit">Submit Comment</button>
+            </form>
+        </div>
+        <div id="action-buttons">
+            <button id="go-back-btn" onclick="window.history.back()">Go Back</button>
+            <button id="delete-topic-btn">Delete Topic</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

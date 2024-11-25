@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Topic</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>Create New Topic</header>
+        <main>
+            <form id="new-topic-form">
+                <label for="topic-name">Topic Name:</label>
+                <input class="topicadd" id="topic-name" required>
+                <div id="options-container">
+                            <label>Options:</label>
+                            <input class="topic-option" required placeholder="Option 1">
+                            <button class="delete-option-btn">Delete</button>
+                </div>
+                <button type="button" id="add-option-btn">Add Option</button>
+                <button type="submit" id="submit-topic-btn">Add Topic</button>
+                <button type="button" id="cancel-btn">Cancel</button>
+            </form>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
