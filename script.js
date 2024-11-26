@@ -19,8 +19,9 @@ if (document.body.id === 'index-page') {
     } else {
         noTopicsMsg.style.display = 'none';
         topics.forEach(topic => {
-            const listItem = document.createElement('li');
+            const listItem = document.createElement('p');
             listItem.textContent = topic.name;
+            listItem.className = 'topic-list-item';
             listItem.addEventListener('click', () => {
                 saveLocalData('currentTopic', topic);
                 navigateTo('topic-details.html');
@@ -45,6 +46,7 @@ if (document.body.id === 'create-topic-page') {
     addOptionBtn.addEventListener('click', () => {
         const optionField = document.createElement('div');
         optionField.className = 'option-field';
+        optionField.style.display = 'flex';
         optionField.innerHTML = `
             <input class="topic-option" required placeholder="Option">
             <button type="button" class="delete-option-btn">Delete</button>
@@ -281,6 +283,7 @@ if (document.body.id === 'topic-details-page') {
     // Load comments
     currentTopic.comments.forEach(comment => {
         const commentElem = document.createElement('li');
+        commentElem.style.width = '90%';
         commentElem.textContent = `You (${comment.timestamp}):\n ${comment.text}`;
         commentsList.appendChild(commentElem);
     });
@@ -299,6 +302,7 @@ if (document.body.id === 'topic-details-page') {
         saveLocalData('topics', getLocalData('topics').map(t => t.name === currentTopic.name ? currentTopic : t));
 
         const commentElem = document.createElement('li');
+        commentElem.style.width = '90%';
         commentElem.textContent = `You (${comment.timestamp}):\n ${comment.text}`;
         commentsList.appendChild(commentElem);
 

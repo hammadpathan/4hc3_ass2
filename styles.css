@@ -3,8 +3,13 @@
     padding: 0;
 }
 
+@font-face {
+    font-family: 'Inria Sans';
+    src: url(Inria_Sans/InriaSans-Regular.ttf);
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inria Sans';
     background: #f9f9f9;
     color: #333;
     display: flex;
@@ -14,7 +19,7 @@ body {
 }
 
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 400px;
     background: #fff;
     border-radius: 10px;
@@ -24,9 +29,16 @@ body {
 }
 
 header {
-    font-size: 1.5em;
+    font-size: 2em;
     margin-bottom: 20px;
     text-align: center;
+}
+
+h2 {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 1.7em;
 }
 
 button {
@@ -68,16 +80,6 @@ input, textarea, select {
     font-style: italic;
 }
 
-
-
-
-
-
-
-
-
-
-
 /* Share Modal Styles */
 #share-modal {
     position: fixed;
@@ -102,7 +104,7 @@ input, textarea, select {
 }
 
 #share-modal li {
-    margin-bottom: 5px;
+     margin-bottom: 5px;
 }
 
 #share-modal button {
@@ -141,3 +143,15 @@ input, textarea, select {
 }
 
 
+/* stuff i added*/
+
+.topic-list-item{
+    text-align: center;
+    text-size-adjust: 40px;
+    padding: 7px;
+}
+.topic-list-item:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    text-align: center;
+}
