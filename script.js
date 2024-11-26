@@ -1,181 +1,336 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Detect the current page
-    const isHomePage = document.getElementById('add-topic-btn') !== null;
-    const isCreatePage = document.getElementById('new-topic-form') !== null;
-    const isDetailsPage = document.getElementById('topic-name') !== null;
 
-    if (isHomePage) {
-        // Homepage functionality
-        const addTopicBtn = document.getElementById('add-topic-btn');
-        const topicList = document.getElementById('topic-list');
-        const noTopicsMsg = document.getElementById('no-topics-msg');
+// Utility functions
+const getLocalData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+const saveLocalData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
 
-        // Load topics from localStorage
-        const loadTopics = () => {
-            const topics = JSON.parse(localStorage.getItem('topics')) || [];
-            topics.forEach((topic, index) => addTopicToList(topic.name, index));
-            updateNoTopicsMessage();
-        };
+// Navigation helpers
+const navigateTo = (url) => window.location.href = url;
+const loadTopics = () => getLocalData('topics');
 
-        // Update visibility of the "No topics" message
-        const updateNoTopicsMessage = () => {
-            noTopicsMsg.style.display = topicList.children.length === 0 ? 'block' : 'none';
-        };
+// Index page logic
+if (document.body.id === 'index-page') {
+    const topicList = document.getElementById('topic-list');
+    const noTopicsMsg = document.getElementById('no-topics-msg');
 
-        // Add a topic to the list
-        const addTopicToList = (name, index) => {
-            const topicItem = document.createElement('li');
-            topicItem.textContent = name;
+    const topics = loadTopics();
 
-            topicItem.addEventListener('click', () => {
-                // Navigate to the topic details page
-                window.location.href = `topic-details.html?index=${index}`;
+    if (topics.length === 0) {
+        noTopicsMsg.style.display = 'block';
+    } else {
+        noTopicsMsg.style.display = 'none';
+        topics.forEach(topic => {
+            const listItem = document.createElement('li');
+            listItem.textContent = topic.name;
+            listItem.addEventListener('click', () => {
+                saveLocalData('currentTopic', topic);
+                navigateTo('topic-details.html');
             });
-
-            topicList.appendChild(topicItem);
-        };
-
-        // Navigate to the create-topic page
-        addTopicBtn.addEventListener('click', () => {
-            window.location.href = 'create-topic.html';
-        });
-
-        // Load topics on page load
-        loadTopics();
-    }
-
-    if (isCreatePage) {
-        // Create-topic page functionality
-        const form = document.getElementById('new-topic-form');
-        const addOptionBtn = document.getElementById('add-option-btn');
-        const optionsContainer = document.getElementById('options-container');
-        const cancelBtn = document.getElementById('cancel-btn');
-
-        addOptionBtn.addEventListener('click', () => {
-            console.log('Adding new option field');
-            const newOptionField = document.createElement('div');
-            // newOptionField.classList.add('option-field');
-            newOptionField.innerHTML = `
-                <input class="topic-option" required placeholder="New Option">
-                <button class="delete-option-btn">Delete</button>
-            `;
-            newOptionField.querySelector('.delete-option-btn').addEventListener('click', () => {
-                newOptionField.remove();
-            });
-            optionsContainer.appendChild(newOptionField);
-        });
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Check if at least one option is filled
-            const options = Array.from(document.querySelectorAll('.topic-option')).map(input => input.value.trim());
-            if (options.some(option => option !== '')) {
-                const topicName = document.getElementById('topic-name').value;
-
-                const topics = JSON.parse(localStorage.getItem('topics')) || [];
-                topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [] });
-                localStorage.setItem('topics', JSON.stringify(topics));
-
-                window.location.href = 'index.html';
-            } else {
-                alert('Please fill in at least one option to create the topic.');
-            }
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            window.location.href = 'index.html';
+            topicList.appendChild(listItem);
         });
     }
 
-    if (isDetailsPage) {
-        // Topic-details page functionality
-        const topicNameElem = document.getElementById('topic-name');
-        const optionsList = document.getElementById('options-list');
-        const goBackBtn = document.getElementById('go-back-btn');
-        const deleteTopicBtn = document.getElementById('delete-topic-btn');
-        const commentForm = document.getElementById('comment-form');
-        const commentInput = document.getElementById('comment-input');
-        const commentsList = document.getElementById('comments-list');
-        const voteBtn = document.getElementById('vote-btn');
-        const optionsDropdown = document.getElementById('options-dropdown');
-        const votesDisplay = document.getElementById('votes-display'); // Element for displaying vote counts
-    
-        const topicIndex = new URLSearchParams(window.location.search).get('index');
-        const topics = JSON.parse(localStorage.getItem('topics')) || [];
-        const topic = topics[topicIndex];
-    
-        topicNameElem.textContent = topic.name;
-        
-        // Display options in dropdown
-        topic.options.forEach((option, index) => {
-            const optionElem = document.createElement('option');
-            optionElem.value = index;
-            optionElem.textContent = option.name;
-            optionsDropdown.appendChild(optionElem);
+    document.getElementById('add-topic-btn').addEventListener('click', () => {
+        navigateTo('create-topic.html');
+    });
+}
+
+// Create Topic page logic
+if (document.body.id === 'create-topic-page') {
+    const form = document.getElementById('new-topic-form');
+    const optionsContainer = document.getElementById('options-container');
+    const addOptionBtn = document.getElementById('add-option-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+
+    addOptionBtn.addEventListener('click', () => {
+        const optionField = document.createElement('div');
+        optionField.className = 'option-field';
+        optionField.innerHTML = `
+            <input class="topic-option" required placeholder="Option">
+            <button type="button" class="delete-option-btn">Delete</button>
+        `;
+        optionField.querySelector('.delete-option-btn').addEventListener('click', () => optionField.remove());
+        optionsContainer.appendChild(optionField);
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const topicName = document.getElementById('topic-name').value.trim();
+        const options = Array.from(document.querySelectorAll('.topic-option')).map(input => input.value.trim());
+
+        if (!topicName || options.length < 2 || new Set(options).size !== options.length) {
+            alert('Please ensure the topic name is unique and there are at least two unique options.');
+            return;
+        }
+
+        const topics = getLocalData('topics');
+        if (topics.some(topic => topic.name === topicName)) {
+            alert('A topic with this name already exists. Please choose a different name.');
+            return;
+        }
+
+        topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [], finalized: false });
+        saveLocalData('topics', topics);
+
+        alert('Topic created successfully! You can now share it from the topic details page!.');
+        shareSection.style.display = 'block';
+        navigateTo('index.html');
+    });
+
+    cancelBtn.addEventListener('click', () => navigateTo('index.html'));
+
+}
+
+
+// Topic Details page logic
+if (document.body.id === 'topic-details-page') {
+    const currentTopic = getLocalData('currentTopic');
+
+    if (!currentTopic) {
+        alert('No topic selected. Redirecting to home page.');
+        navigateTo('index.html');
+    }
+
+    const dropdown = document.getElementById('options-dropdown');
+    const voteBtn = document.getElementById('vote-btn');
+    const commentsList = document.getElementById('comments-list');
+    const finalizeTopicBtn = document.getElementById('finalize-topic-btn');
+    const commentForm = document.getElementById('comment-form');
+    const votesDisplay = document.getElementById('votes-display');
+    const sharedWithList = document.getElementById('shared-with-list');
+    const shareTopicBtn = document.getElementById('share-topic-btn');
+    const finalizedMessage = document.createElement('p');
+    finalizedMessage.textContent = 'This topic has been finalized. Voting and commenting are now closed.';
+    finalizedMessage.style.fontWeight = 'bold';
+    finalizedMessage.style.color = 'red';
+
+    const chosenOptionMessage = document.createElement('p');
+    chosenOptionMessage.style.fontWeight = 'bold';
+
+    const randomNames = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Heidi"];
+
+    // Populate dropdown and votes
+    document.getElementById('topic-name').textContent = currentTopic.name;
+    currentTopic.options.forEach((option, index) => {
+        const optionElem = document.createElement('option');
+        optionElem.value = index;
+        optionElem.textContent = `${option.name}`;
+        dropdown.appendChild(optionElem);
+    });
+
+    const updateVotesDisplay = () => {
+        votesDisplay.innerHTML = '';
+        currentTopic.options.forEach((option, index) => {
+            const voteElem = document.createElement('p');
+            voteElem.textContent = `${option.name}: ${option.votes} votes`;
+            votesDisplay.appendChild(voteElem);
         });
-    
-        // Display separate vote counts
-        topic.options.forEach((option, index) => {
-            const voteCountElem = document.createElement('p');
-            voteCountElem.textContent = `${option.name} - Votes: ${option.votes}`;
-            votesDisplay.appendChild(voteCountElem);
+    };
+
+     // Display "Shared With" list
+     const displaySharedWith = () => {
+        sharedWithList.innerHTML = '';
+        if (currentTopic.sharedWith?.length === 0) {
+            sharedWithList.innerHTML = '<li>No one has been shared with yet.</li>';
+        } else {
+            currentTopic.sharedWith.forEach(name => {
+                const listItem = document.createElement('li');
+                listItem.textContent = name;
+                sharedWithList.appendChild(listItem);
+            });
+        }
+    };
+
+    // Share topic again
+    shareTopicBtn.addEventListener('click', () => {
+        const shareModal = document.createElement('div');
+        shareModal.id = 'share-modal';
+        shareModal.style.position = 'fixed';
+        shareModal.style.top = '50%';
+        shareModal.style.left = '50%';
+        shareModal.style.transform = 'translate(-50%, -50%)';
+        shareModal.style.backgroundColor = '#fff';
+        shareModal.style.padding = '20px';
+        shareModal.style.border = '1px solid #ccc';
+        shareModal.style.borderRadius = '10px';
+        shareModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        shareModal.innerHTML = `
+            <h4>Select People to Share With:</h4>
+        `;
+
+        const shareList = document.createElement('ul');
+        randomNames.forEach(name => {
+            const listItem = document.createElement('li');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = name;
+            listItem.appendChild(checkbox);
+            listItem.appendChild(document.createTextNode(name));
+            shareList.appendChild(listItem);
         });
-    
-        // Voting functionality
-        voteBtn.addEventListener('click', () => {
-            const selectedOptionIndex = optionsDropdown.value;
-            
-            // If no option is selected, show alert
-            if (selectedOptionIndex === '') {
-                alert('Please select an option before voting!');
+        shareModal.appendChild(shareList);
+
+        const confirmShareBtn = document.createElement('button');
+        confirmShareBtn.textContent = 'Confirm Sharing';
+        confirmShareBtn.style.marginTop = '10px';
+        shareModal.appendChild(confirmShareBtn);
+
+        const closeModalBtn = document.createElement('button');
+        closeModalBtn.textContent = 'Close';
+        closeModalBtn.style.marginLeft = '10px';
+        closeModalBtn.style.marginTop = '10px';
+        shareModal.appendChild(closeModalBtn);
+
+        document.body.appendChild(shareModal);
+
+        // Handle Confirm Sharing
+        confirmShareBtn.addEventListener('click', () => {
+            const selectedNames = Array.from(shareList.querySelectorAll('input:checked')).map(input => input.value);
+            if (selectedNames.length === 0) {
+                alert('Please select at least one person to share with.');
                 return;
             }
-    
-            // Increment votes and update localStorage
-            topic.options[selectedOptionIndex].votes += 1;
-            localStorage.setItem('topics', JSON.stringify(topics));
-    
-            // Update the votes display to reflect new vote count
-            const voteElements = votesDisplay.querySelectorAll('p');
-            voteElements.forEach((elem, index) => {
-                elem.textContent = `${topic.options[index].name} - Votes: ${topic.options[index].votes}`;
-            });
+
+            // Update sharedWith array
+            currentTopic.sharedWith = [...new Set([...(currentTopic.sharedWith || []), ...selectedNames])];
+            saveLocalData('topics', loadTopics().map(t => t.name === currentTopic.name ? currentTopic : t));
+
+            // Update Shared With List in UI
+            displaySharedWith();
+
+            // Display confirmation message
+            alert(`Topic shared with: ${selectedNames.join(', ')}`);
+
+            // Remove modal
+            document.body.removeChild(shareModal);
         });
-    
-        // Display comments
-        topic.comments.forEach(comment => {
-            const commentElem = document.createElement('li');
-            commentElem.textContent = comment;
-            commentsList.appendChild(commentElem);
+
+        // Handle Close Modal
+        closeModalBtn.addEventListener('click', () => {
+            document.body.removeChild(shareModal);
         });
-    
-        // Add new comment
-        commentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newComment = commentInput.value.trim();
-            if (newComment !== '') {
-                topic.comments.push(newComment);
-                localStorage.setItem('topics', JSON.stringify(topics));
-                const newCommentElem = document.createElement('li');
-                newCommentElem.textContent = newComment;
-                commentsList.appendChild(newCommentElem);
-                commentInput.value = ''; // Clear the input
+    });
+
+    const getChosenOption = () => {
+        let maxVotes = -1;
+        let chosenOption = 'No votes yet';
+        currentTopic.options.forEach(option => {
+            if (option.votes > maxVotes) {
+                maxVotes = option.votes;
+                chosenOption = option.name;
             }
         });
-    
-        goBackBtn.addEventListener('click', () => {
-            window.location.href = 'index.html';
-        });
-    
-        deleteTopicBtn.addEventListener('click', () => {
-            const confirmDelete = confirm('Are you sure you want to delete this topic?');
-            if (confirmDelete) {
-                topics.splice(topicIndex, 1);
-                localStorage.setItem('topics', JSON.stringify(topics));
-                window.location.href = 'index.html';
-            }
-        });
+        return chosenOption;
+    };
+
+
+
+
+    // Handle voting
+    const userVotes = getLocalData('userVotes');
+    voteBtn.addEventListener('click', () => {
+        const selectedOptionIndex = dropdown.value;
+        if (selectedOptionIndex === null) {
+            alert('Please select an option to vote.');
+            return;
+        }
+
+        // Update votes
+        const previousVote = userVotes[currentTopic.name];
+        if (previousVote !== undefined) {
+            currentTopic.options[previousVote].votes -= 1;
+        }
+        currentTopic.options[selectedOptionIndex].votes += 1;
+        userVotes[currentTopic.name] = selectedOptionIndex;
+
+        saveLocalData('topics', getLocalData('topics').map(t => t.name === currentTopic.name ? currentTopic : t));
+        saveLocalData('userVotes', userVotes);
+
+        alert('Your vote has been updated!');
+        updateVotesDisplay();
+    });
+
+    updateVotesDisplay();
+
+    // Handle finalizing topic
+    finalizeTopicBtn.addEventListener('click', () => {
+        if (!confirm('Are you sure you want to finalize this topic? This will close voting and commenting.')) return;
+        currentTopic.finalized = true;
+
+        const chosenOption = getChosenOption();
+        chosenOptionMessage.textContent = `Chosen Option: ${chosenOption}`;
+
+        saveLocalData('topics', getLocalData('topics').map(t => t.name === currentTopic.name ? currentTopic : t));
+        alert('This topic has been finalized. Voting and commenting are now disabled.');
+
+        dropdown.disabled = true;
+        voteBtn.disabled = true;
+        voteBtn.style.background = 'gray';
+        commentForm.querySelector('button').disabled = true;
+        finalizeTopicBtn.disabled = true;
+        finalizeTopicBtn.style.background = 'gray';
+        shareTopicBtn.disabled = true;
+        shareTopicBtn.style.background = 'gray';
+        document.getElementById("comment-input").disabled = true;
+        commentForm.querySelector('button').style.background = 'gray';
+        document.getElementById("topic-info").parentNode.insertBefore(finalizedMessage, document.getElementById('topic-info'));
+        document.getElementById("topic-info").parentNode.insertBefore(chosenOptionMessage, document.getElementById('topic-info'));
+    });
+
+    // Load comments
+    currentTopic.comments.forEach(comment => {
+        const commentElem = document.createElement('li');
+        commentElem.textContent = `You (${comment.timestamp}):\n ${comment.text}`;
+        commentsList.appendChild(commentElem);
+    });
+
+    commentForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const commentInput = document.getElementById('comment-input').value.trim();
+        if (!commentInput) return;
+
+        const comment = {
+            timestamp: new Date().toLocaleString(),
+            text: commentInput
+        };
+
+        currentTopic.comments.push(comment);
+        saveLocalData('topics', getLocalData('topics').map(t => t.name === currentTopic.name ? currentTopic : t));
+
+        const commentElem = document.createElement('li');
+        commentElem.textContent = `You (${comment.timestamp}):\n ${comment.text}`;
+        commentsList.appendChild(commentElem);
+
+        document.getElementById('comment-input').value = '';
+    });
+
+    // Disable inputs if finalized
+    if (currentTopic.finalized) {
+        const chosenOption = getChosenOption();
+        dropdown.disabled = true;
+        voteBtn.disabled = true;
+        voteBtn.style.background = 'gray';
+        finalizeTopicBtn.disabled = true;
+        finalizeTopicBtn.style.background = 'gray';
+        shareTopicBtn.disabled = true;
+        shareTopicBtn.style.background = 'gray';
+        commentForm.querySelector('button').disabled = true;
+        commentForm.querySelector('button').style.background = 'gray';
+        document.getElementById("comment-input").disabled = true;
+        chosenOptionMessage.textContent = `Chosen Option: ${chosenOption}`;
+        document.getElementById("topic-info").parentNode.insertBefore(finalizedMessage, document.getElementById('topic-info'));
+        document.getElementById("topic-info").parentNode.insertBefore(chosenOptionMessage, document.getElementById('topic-info'));
     }
-    
-});
+
+    document.getElementById('go-back-btn').addEventListener('click', () => navigateTo('index.html'));
+    document.getElementById('delete-topic-btn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this topic? This action cannot be undone.')) {
+            const topics = loadTopics().filter(topic => topic.name !== currentTopic.name);
+            saveLocalData('topics', topics);
+            navigateTo('index.html');
+        }
+    });
+
+    displaySharedWith();
+}

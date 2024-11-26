@@ -6,22 +6,39 @@
     <title>Create New Topic</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="create-topic-page">
     <div class="container">
         <header>Create New Topic</header>
         <main>
             <form id="new-topic-form">
                 <label for="topic-name">Topic Name:</label>
-                <input class="topicadd" id="topic-name" required>
+                <input id="topic-name" required placeholder="Enter topic name">
                 <div id="options-container">
-                            <label>Options:</label>
-                            <input class="topic-option" required placeholder="Option 1">
-                            <button class="delete-option-btn">Delete</button>
+                    <label>Options:</label>
+                    <div class="option-field">
+                        <input class="topic-option" required placeholder="Option 1">
+                        <button class="delete-option-btn">Delete</button>
+                    </div>
                 </div>
                 <button type="button" id="add-option-btn">Add Option</button>
                 <button type="submit" id="submit-topic-btn">Add Topic</button>
                 <button type="button" id="cancel-btn">Cancel</button>
             </form>
+
+            <!-- Share Section -->
+            <div id="share-section" style="display: none; margin-top: 20px;">
+                <h3>Share Topic</h3>
+                <button id="share-topic-btn">Share Topic</button>
+                <div id="share-modal" style="display: none;">
+                    <h4>Select People to Share With:</h4>
+                    <ul id="share-list">
+                        <!-- Random names will be populated here -->
+                    </ul>
+                    <button id="confirm-share-btn">Confirm Sharing</button>
+                </div>
+                <p id="share-message" style="display: none;"></p>
+            </div>
+            
         </main>
     </div>
     <script src="script.js"></script>
