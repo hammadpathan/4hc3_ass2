@@ -7,43 +7,42 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body id="topic-details-page">
-    <main>
     <div class="container">
         <main>
-        <div id="topic-info" style="text-align: center;">
-            <h2 id="topic-name">Topic Name</h2>
-            <p style="text-align: left;">Choose an option below:</p>
-            <select id="options-dropdown">
-                <option value="">Select an option</option>
-            </select>
-            <button id="vote-btn">Vote</button>
-        </div>
-        <div id="votes-display"></div>
+            <div id="topic-info" style="text-align: center;">
+                <h2 id="topic-name">Topic Name</h2>
+                <p style="text-align: left;">Choose an option below:</p>
+                <select id="options-dropdown">
+                    <option value="">Select an option</option>
+                </select>
+                <button id="vote-btn">Vote</button>
+            </div>
+            <div id="votes-display"></div>
 
-        <!-- Shared With Section -->
-        <div id="shared-with-section">
-            <h3>Shared With:</h3>
-            <ul id="shared-with-list">
-                <!-- Shared names will be populated here -->
-            </ul>
-            <button class="greenbutton" id="share-topic-btn">Share Topic</button>
-        </div>
-        
-        <div id="comment-section">
-            <h3 style="font-size: 1.3em; padding-top: 7%;">Feedback</h3>
-            <ul id="comments-list" style="overflow-x: auto;"></ul>
-            <form id="comment-form">
-                <textarea id="comment-input" placeholder="Add a comment..." style="overflow-x: auto;"required></textarea>
-                <button type="submit">Submit Comment</button>
-                
-            </form>
-        </div>
-        <div id="action-buttons" style="display: flex; justify-content: space-between; padding-top: 10px;">
-            <button id="go-back-btn">Go Back</button>
-            <button class="redbutton" id="delete-topic-btn">Delete Topic</button>
-            <button class="greenbutton" id="finalize-topic-btn">Finalize Topic</button>
-        </div>
-    </main>
+            <!-- Shared With Section -->
+            <div id="shared-with-section">
+                <h3>Shared With:</h3>
+                <ul id="shared-with-list">
+                    <!-- Shared names will be populated here -->
+                </ul>
+                <button class="greenbutton" id="share-topic-btn">Share Topic</button>
+            </div>
+            
+            <div id="comment-section">
+                <h3 style="font-size: 1.3em; padding-top: 7%;">Feedback</h3>
+                <ul id="comments-list" style="overflow-x: auto;"></ul>
+                <form id="comment-form">
+                    <textarea id="comment-input" placeholder="Add a comment..." style="overflow-x: auto;"required></textarea>
+                    <button type="submit">Submit Comment</button>
+                    
+                </form>
+            </div>
+            <div id="action-buttons" style="display: flex; justify-content: space-between; padding-top: 10px;">
+                <button id="go-back-btn">Go Back</button>
+                <button class="redbutton" id="delete-topic-btn">Delete Topic</button>
+                <button class="greenbutton" id="finalize-topic-btn">Finalize Topic</button>
+            </div>
+        </main>
     </div>
     <script src="script.js"></script>
 </body>
