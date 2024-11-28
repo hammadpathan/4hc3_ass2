@@ -62,14 +62,26 @@ button.delete-option-btn {
     margin-left: 10px;
 }
 
+button.delete-option-btn:hover {
+    background: #c82333;
+}
+
 form {
     margin-top: 15px;
 }
 
-input, textarea, select {
+input, select {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    width: 100%;
+    padding: 0px;
+    margin: 5px 0px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -154,4 +166,22 @@ input, textarea, select {
     background-color: #f1f1f1;
     border-radius: 5px;
     text-align: center;
+}
+
+.greenbutton{
+    border: none;
+    background: green;
+}
+
+.greenbutton:hover {
+    background: #1c6e03;
+}
+
+.redbutton{
+    border: none;
+    background: red;
+}
+
+.redbutton:hover {
+    background: #970606;
 }

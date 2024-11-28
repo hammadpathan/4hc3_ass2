@@ -8,6 +8,7 @@
 </head>
 <body id="topic-details-page">
     <main>
+    <div class="container">
         <div id="topic-info" style="text-align: center;">
             <h2 id="topic-name">Topic Name</h2>
             <p style="text-align: left;">Choose an option below:</p>
@@ -24,23 +25,24 @@
             <ul id="shared-with-list">
                 <!-- Shared names will be populated here -->
             </ul>
-            <button id="share-topic-btn" style="background: green;">Share Topic</button>
+            <button class="greenbutton" id="share-topic-btn">Share Topic</button>
         </div>
         
         <div id="comment-section">
             <h3 style="font-size: 1.3em; padding-top: 7%;">Feedback</h3>
             <ul id="comments-list" style="overflow-x: auto;"></ul>
             <form id="comment-form">
-                <textarea id="comment-input" placeholder="Add a comment..." style="width: 90%; overflow-x: auto;"required></textarea>
+                <textarea id="comment-input" placeholder="Add a comment..." style="overflow-x: auto;"required></textarea>
                 <button type="submit">Submit Comment</button>
                 
             </form>
         </div>
-        <div id="action-buttons" style="display: flex; justify-content: space-between;">
+        <div id="action-buttons" style="display: flex; justify-content: space-between; padding-top: 10px;">
             <button id="go-back-btn">Go Back</button>
-            <button id="delete-topic-btn" style="background: red;">Delete Topic</button>
-            <button id="finalize-topic-btn" style="background: green;">Finalize Topic</button>
+            <button class="redbutton" id="delete-topic-btn">Delete Topic</button>
+            <button class="greenbutton" id="finalize-topic-btn">Finalize Topic</button>
         </div>
+    </div>
     </main>
     <script src="script.js"></script>
 </body>

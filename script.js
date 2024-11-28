@@ -72,12 +72,12 @@ if (document.body.id === 'create-topic-page') {
             return;
         }
 
-        topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [], finalized: false });
+        topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [], finalized: false, userVotes: undefined, sharedWith: [] });
         saveLocalData('topics', topics);
 
+        navigateTo('index.html');
         alert('Topic created successfully! You can now share it from the topic details page!.');
         shareSection.style.display = 'block';
-        navigateTo('index.html');
     });
 
     cancelBtn.addEventListener('click', () => navigateTo('index.html'));
@@ -106,6 +106,8 @@ if (document.body.id === 'topic-details-page') {
     finalizedMessage.textContent = 'This topic has been finalized. Voting and commenting are now closed.';
     finalizedMessage.style.fontWeight = 'bold';
     finalizedMessage.style.color = 'red';
+    finalizedMessage.style.textAlign = 'center';
+    finalizedMessage.style.paddingBottom = '10px';
 
     const chosenOptionMessage = document.createElement('p');
     chosenOptionMessage.style.fontWeight = 'bold';
@@ -230,7 +232,7 @@ if (document.body.id === 'topic-details-page') {
 
 
     // Handle voting
-    const userVotes = getLocalData('userVotes');
+    // const userVotes = currentTopic.userVotes;
     voteBtn.addEventListener('click', () => {
         const selectedOptionIndex = dropdown.value;
         if (selectedOptionIndex === null) {
@@ -239,15 +241,16 @@ if (document.body.id === 'topic-details-page') {
         }
 
         // Update votes
-        const previousVote = userVotes[currentTopic.name];
+        const previousVote = currentTopic.userVotes;
         if (previousVote !== undefined) {
             currentTopic.options[previousVote].votes -= 1;
         }
+        
         currentTopic.options[selectedOptionIndex].votes += 1;
-        userVotes[currentTopic.name] = selectedOptionIndex;
+        currentTopic.userVotes = selectedOptionIndex;
 
         saveLocalData('topics', getLocalData('topics').map(t => t.name === currentTopic.name ? currentTopic : t));
-        saveLocalData('userVotes', userVotes);
+        //saveLocalData('userVotes', userVotes);
 
         alert('Your vote has been updated!');
         updateVotesDisplay();
@@ -284,6 +287,7 @@ if (document.body.id === 'topic-details-page') {
     currentTopic.comments.forEach(comment => {
         const commentElem = document.createElement('li');
         commentElem.style.width = '90%';
+        commentElem.style.overflowWrap = 'break-word';
         commentElem.textContent = `You (${comment.timestamp}):\n ${comment.text}`;
         commentsList.appendChild(commentElem);
     });
