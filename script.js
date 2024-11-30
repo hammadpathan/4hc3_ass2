@@ -63,7 +63,7 @@ if (document.body.id === 'create-topic-page') {
         optionField.className = 'option-field';
         optionField.style.display = 'flex';
         optionField.innerHTML = `
-            <input class="input" required placeholder="Option">
+            <input class="inputoptions" required placeholder="Option">
             <button type="button" class="delete-option-btn">Delete</button>
         `;
         optionField.querySelector('.delete-option-btn').addEventListener('click', () => optionField.remove());
