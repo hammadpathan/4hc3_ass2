@@ -78,7 +78,7 @@ if (document.body.id === 'create-topic-page') {
     submitbutton.addEventListener('click', (e) => {
         e.preventDefault();
         const topicName = document.getElementById('topic-name').value.trim();
-        const options = Array.from(document.querySelectorAll('.topic-option')).map(input => input.value.trim());
+        const options = Array.from(document.querySelectorAll('.inputoptions')).map(input => input.value.trim());
         const deadlinedate = new Date(document.getElementById('deadline').value);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
