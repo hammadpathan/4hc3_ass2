@@ -70,7 +70,28 @@ form {
     margin-top: 15px;
 }
 
-input, select {
+.input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.topicsharecheckbox {
+    display: flex;
+    padding: 4px 0;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.topicsharecheckbox:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 4px 0;
+}
+
+select {
     width: 100%;
     padding: 10px;
     margin: 5px 0;

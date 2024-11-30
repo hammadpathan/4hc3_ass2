@@ -63,7 +63,7 @@ if (document.body.id === 'create-topic-page') {
         optionField.className = 'option-field';
         optionField.style.display = 'flex';
         optionField.innerHTML = `
-            <input class="topic-option" required placeholder="Option">
+            <input class="input" required placeholder="Option">
             <button type="button" class="delete-option-btn">Delete</button>
         `;
         optionField.querySelector('.delete-option-btn').addEventListener('click', () => optionField.remove());
@@ -197,11 +197,12 @@ if (document.body.id === 'topic-details-page') {
         const shareList = document.createElement('ul');
         randomNames.forEach(name => {
             const listItem = document.createElement('li');
+            listItem.className = 'topicsharecheckbox';
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = name;
-            listItem.appendChild(checkbox);
             listItem.appendChild(document.createTextNode(name));
+            listItem.appendChild(checkbox);
             shareList.appendChild(listItem);
         });
         shareModal.appendChild(shareList);
