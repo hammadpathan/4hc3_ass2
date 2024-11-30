@@ -12,6 +12,7 @@ if (document.body.id === 'index-page') {
     const topicList = document.getElementById('topic-list');
     const noTopicsMsg = document.getElementById('no-topics-msg');
 
+    localStorage.clear();
     const topics = loadTopics();
 
     if (topics.length === 0) {
