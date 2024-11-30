@@ -19,14 +19,29 @@ if (document.body.id === 'index-page') {
     } else {
         noTopicsMsg.style.display = 'none';
         topics.forEach(topic => {
+            const newdiv = document.createElement('div');
+            newdiv.className = 'topicdiv'
             const listItem = document.createElement('p');
-            listItem.textContent = topic.name;
+            const duedate = document.createElement('p');
+            listItem.textContent = `${topic.name}`;
+
+            // calcualte the remaining time
+            const today = new Date();
+            const deadline = new Date(topic.deadline);
+            const diff = deadline - today;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+
+            duedate.textContent = `Deadline: ${days} days`;
             listItem.className = 'topic-list-item';
-            listItem.addEventListener('click', () => {
+            duedate.className = 'topic-list-item-deadline';
+            newdiv.addEventListener('click', () => {
                 saveLocalData('currentTopic', topic);
                 navigateTo('topic-details.html');
             });
-            topicList.appendChild(listItem);
+            newdiv.appendChild(listItem);
+            newdiv.appendChild(duedate);
+            topicList.appendChild(newdiv);
         });
     }
 
@@ -37,7 +52,7 @@ if (document.body.id === 'index-page') {
 
 // Create Topic page logic
 if (document.body.id === 'create-topic-page') {
-    const form = document.getElementById('new-topic-form');
+    const submitbutton = document.getElementById('submit-topic-btn');
     const optionsContainer = document.getElementById('options-container');
     const addOptionBtn = document.getElementById('add-option-btn');
     const cancelBtn = document.getElementById('cancel-btn');
@@ -55,14 +70,26 @@ if (document.body.id === 'create-topic-page') {
         optionsContainer.appendChild(optionField);
     });
 
-    form.addEventListener('submit', (e) => {
+    cancelBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        navigateTo('index.html');
+    });
 
+    submitbutton.addEventListener('click', (e) => {
+        e.preventDefault();
         const topicName = document.getElementById('topic-name').value.trim();
         const options = Array.from(document.querySelectorAll('.topic-option')).map(input => input.value.trim());
+        const deadlinedate = new Date(document.getElementById('deadline').value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         if (!topicName || options.length < 2 || new Set(options).size !== options.length) {
             alert('Please ensure the topic name is unique and there are at least two unique options.');
+            return;
+        }
+
+        if (deadlinedate <= today) {
+            alert('Please ensure the deadline is in the future.');
             return;
         }
 
@@ -72,15 +99,13 @@ if (document.body.id === 'create-topic-page') {
             return;
         }
 
-        topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [], finalized: false, userVotes: undefined, sharedWith: [] });
+        topics.push({ name: topicName, options: options.map(option => ({ name: option, votes: 0 })), comments: [], finalized: false, userVotes: undefined, deadline: deadlinedate, sharedWith: [] });
         saveLocalData('topics', topics);
 
         navigateTo('index.html');
         alert('Topic created successfully! You can now share it from the topic details page!.');
         shareSection.style.display = 'block';
     });
-
-    cancelBtn.addEventListener('click', () => navigateTo('index.html'));
 
 }
 
@@ -103,6 +128,7 @@ if (document.body.id === 'topic-details-page') {
     const sharedWithList = document.getElementById('shared-with-list');
     const shareTopicBtn = document.getElementById('share-topic-btn');
     const finalizedMessage = document.createElement('p');
+    const deadlineShow = document.getElementById('deadline');
     finalizedMessage.textContent = 'This topic has been finalized. Voting and commenting are now closed.';
     finalizedMessage.style.fontWeight = 'bold';
     finalizedMessage.style.color = 'red';
@@ -113,6 +139,11 @@ if (document.body.id === 'topic-details-page') {
     chosenOptionMessage.style.fontWeight = 'bold';
 
     const randomNames = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Heidi"];
+
+    // populate deadline and format it into a simple format without time
+    deadlineShow.textContent = `Deadline: ${currentTopic.deadline.split('T')[0]}`;
+
+
 
     // Populate dropdown and votes
     document.getElementById('topic-name').textContent = currentTopic.name;

@@ -11,13 +11,23 @@
         <header>Create New Topic</header>
         <main>
             <form id="new-topic-form">
+                <div>
                 <label for="topic-name">Topic Name:</label>
-                <input id="topic-name" required placeholder="Enter topic name" style="width: 95%">
+                <div style="display: flex;">
+                    <input id="topic-name" required placeholder="Enter topic name">
+                </div>
+                </div>
                 <div id="options-container">
                     <label>Options:</label>
                     <div style="display: flex"> 
                         <input class="topic-option" required placeholder="Option">
                         <button class="delete-option-btn">Delete</button>
+                    </div>
+                </div>
+                <div>
+                    <label for="deadline">Deadline:</label>
+                    <div style="display: flex;">
+                        <input type="date" id="deadline" required>
                     </div>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding-top: 10px;">
